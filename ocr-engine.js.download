@@ -1,0 +1,164 @@
+﻿// Real-time Canvas Forensic Processing, ELA Simulation & Pipeline Engine
+const ForensicEngine = {
+  // Generate Error Level Analysis (ELA) heatmap on a target canvas
+  generateELA(imageElement, canvasElement, isTampered = false) {
+    if (!imageElement || !canvasElement) return;
+    const ctx = canvasElement.getContext('2d');
+    canvasElement.width = imageElement.naturalWidth || 600;
+    canvasElement.height = imageElement.naturalHeight || 400;
+
+    // Draw baseline
+    ctx.drawImage(imageElement, 0, 0, canvasElement.width, canvasElement.height);
+    try {
+      const imgData = ctx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      const data = imgData.data;
+
+      // High-pass filter & compression residual simulation
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+
+        // Base residual noise floor
+        let noise = Math.abs(r - gray) * 3.5 + Math.random() * 12;
+
+        if (isTampered) {
+          // Calculate normalized coordinates
+          const pixelIndex = i / 4;
+          const x = (pixelIndex % canvasElement.width) / canvasElement.width;
+          const y = Math.floor(pixelIndex / canvasElement.width) / canvasElement.height;
+
+          // Inject elevated compression artifact thermal hotspots in tampered areas
+          if ((x > 0.10 && x < 0.35 && y > 0.30 && y < 0.75) || // Photo splice region
+              (x > 0.60 && x < 0.90 && y > 0.55 && y < 0.85)) { // Stamp/altered DOB region
+            noise += 160 + Math.random() * 80;
+            data[i] = Math.min(255, noise * 1.4);     // Red channel boost
+            data[i + 1] = Math.max(0, 180 - noise);   // Green
+            data[i + 2] = Math.max(0, noise * 0.4);   // Blue
+          } else {
+            data[i] = Math.min(255, noise * 0.4);
+            data[i + 1] = Math.min(255, noise * 0.8);
+            data[i + 2] = Math.min(255, noise * 1.5);
+          }
+        } else {
+          // Clean uniform baseline (dark purple/blue hue representing uniform JPEG grid)
+          data[i] = Math.min(255, noise * 0.3);
+          data[i + 1] = Math.min(255, noise * 0.6);
+          data[i + 2] = Math.min(255, noise * 1.2);
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+    } catch (err) {
+      console.warn("Canvas ELA pixel processing restricted (cross-origin):", err);
+      // Fallback visual simulation pattern
+      ctx.fillStyle = isTampered ? "rgba(239, 68, 68, 0.4)" : "rgba(6, 182, 212, 0.2)";
+      ctx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+    }
+  },
+
+  // Render dynamic bounding box highlights over the document preview
+  renderBoundingBoxes(containerEl, boxes = []) {
+    if (!containerEl) return;
+    containerEl.innerHTML = "";
+    boxes.forEach(box => {
+      const boxDiv = document.createElement("div");
+      boxDiv.className = ocr-box ;
+      boxDiv.style.left = ${box.x}%;
+      boxDiv.style.top = ${box.y}%;
+      boxDiv.style.width = ${box.w}%;
+      boxDiv.style.height = ${box.h}%;
+
+      const labelDiv = document.createElement("div");
+      labelDiv.className = "ocr-box-label";
+      labelDiv.textContent = box.label;
+      boxDiv.appendChild(labelDiv);
+
+      containerEl.appendChild(boxDiv);
+    });
+  },
+
+  // 8-step pipeline definitions with simulation metadata
+  pipelineSteps: [
+    {
+      id: 1,
+      title: "Step 1: Image Quality Check",
+      desc: "Resolution, lighting, glare, blur index & perspective skew rectification",
+      logs: [
+        "[INFO] Initializing OpenCV Bilateral Filter pipeline...",
+        "[INFO] Computed Laplacian variance: 418.5 (Threshold > 100 -> SHARP)",
+        "[INFO] Hough transform line detection: Document skew angle 0.38° - rectified."
+      ]
+    },
+    {
+      id: 2,
+      title: "Step 2: OCR Text Extraction",
+      desc: "Multimodal LayoutLMv3 + TrOCR neural entity segmentation",
+      logs: [
+        "[INFO] Neural OCR engine loaded. Segmenting text layout blocks...",
+        "[INFO] Parsed Machine Readable Zone (MRZ) 2-line format ICAO Doc 9303.",
+        "[INFO] Extracted 18 key-value tokens with mean character confidence 98.4%."
+      ]
+    },
+    {
+      id: 3,
+      title: "Step 3: Document Structure Analysis",
+      desc: "Guilloche background patterns, font metrics, microprint integrity",
+      logs: [
+        "[INFO] Analyzing microprint line continuity at 600 DPI equivalent...",
+        "[INFO] Extracting guilloche vector wavelines via Fourier spectral decomposition...",
+        "[ANALYSIS] Template alignment against jurisdictional master specification."
+      ]
+    },
+    {
+      id: 4,
+      title: "Step 4: Photo / Face Analysis",
+      desc: "Biometric landmark alignment, Deepfake & GAN artifact screening",
+      logs: [
+        "[INFO] Facial bounding box localized [X: 112, Y: 148, W: 240, H: 310].",
+        "[INFO] Extracting 68 facial landmarks via ArcFace feature backbone...",
+        "[INFO] Frequency domain analysis: Searching for generative adversarial network (GAN) synthetic artifacts."
+      ]
+    },
+    {
+      id: 5,
+      title: "Step 5: Tampering Detection",
+      desc: "Error Level Analysis (ELA), clone stamp detection & edge splicing",
+      logs: [
+        "[INFO] Computing Error Level Analysis (ELA) across discrete JPEG 8x8 matrices...",
+        "[INFO] SIFT keypoint matching executing for copy-move clone stamp localization...",
+        "[ANALYSIS] Checking pixel variance along portrait boundary and text zones."
+      ]
+    },
+    {
+      id: 6,
+      title: "Step 6: Information Consistency Check",
+      desc: "ICAO 9303 checksum algorithms, DOB/Age logic, visual vs barcode check",
+      logs: [
+        "[INFO] Calculating ICAO 9303 check digits with weights 7-3-1...",
+        "[INFO] Comparing visual zone date-of-birth with MRZ composite payload...",
+        "[ANALYSIS] Cross-verifying issuance and expiration mathematical validity."
+      ]
+    },
+    {
+      id: 7,
+      title: "Step 7: Database / Registry Verification",
+      desc: "Mock National Civil Registry query, Interpol SLTD watchlist check",
+      logs: [
+        "[INFO] Dispatching mock query to National Civil Identity Repository...",
+        "[INFO] Cross-referencing Interpol Stolen and Lost Travel Documents (SLTD) feed...",
+        "[INFO] Cryptographic document fingerprint (SHA-256) evaluated."
+      ]
+    },
+    {
+      id: 8,
+      title: "Step 8: Final Risk Assessment",
+      desc: "Ensemble Gradient Boosting classification & composite risk score calculation",
+      logs: [
+        "[INFO] Aggregating weighted vector scores across all 7 verification pillars...",
+        "[INFO] Generating explainable AI feature attribution tree...",
+        "[SUCCESS] Final Risk Assessment complete. Formulating forensic determination."
+      ]
+    }
+  ]
+};

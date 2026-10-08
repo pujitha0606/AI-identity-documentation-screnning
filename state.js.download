@@ -1,0 +1,160 @@
+﻿// State Management & Local Storage Persistence
+const AppState = {
+  currentUser: {
+    name: "Alex Cross",
+    email: "a.cross@border-intel.gov",
+    role: "Senior Forensic Analyst",
+    officerId: "AG-9402",
+    clearance: "LEVEL-3_FORENSICS",
+    loggedIn: false
+  },
+
+  activeView: "login", // 'login', 'dashboard', 'upload', 'screening', 'results', 'comparison', 'history', 'report', 'technology'
+
+  currentUpload: {
+    presetId: "clean_passport",
+    imageSrc: "assets/sample_passport_clean.jpg",
+    docType: "Passport",
+    country: "Republic of Aethel",
+    fileName: "specimen_passport_elara.jpg"
+  },
+
+  screeningStatus: {
+    isRunning: false,
+    currentStepIndex: 0,
+    speedMs: 1100, // Speed for animation steps
+    stepResults: []
+  },
+
+  activeResult: null,
+
+  // Historical audit screenings store
+  history: [
+    {
+      id: "SCR-2026-9812",
+      timestamp: "2026-10-08 19:42:10",
+      subjectName: "ELARA, JANE SARAH",
+      docType: "Passport",
+      docNumber: "AE12345678",
+      country: "Republic of Aethel",
+      status: "VERIFIED",
+      riskScore: 6,
+      analyst: "A. Cross (AG-9402)",
+      presetRef: "clean_passport"
+    },
+    {
+      id: "SCR-2026-9810",
+      timestamp: "2026-10-08 18:15:33",
+      subjectName: "DOE, JOHN ALLEN",
+      docType: "Driver's License",
+      docNumber: "MTR-123-456-789",
+      country: "Metropolis State",
+      status: "SUSPICIOUS",
+      riskScore: 82,
+      analyst: "A. Cross (AG-9402)",
+      presetRef: "tampered_dl"
+    },
+    {
+      id: "SCR-2026-9799",
+      timestamp: "2026-10-08 16:50:04",
+      subjectName: "ROSTOVA, ELENA MARIA",
+      docType: "National ID Card",
+      docNumber: "NV-9840219-X",
+      country: "Republic of Novaria",
+      status: "REJECTED",
+      riskScore: 94,
+      analyst: "A. Cross (AG-9402)",
+      presetRef: "synthetic_id"
+    },
+    {
+      id: "SCR-2026-9785",
+      timestamp: "2026-10-08 14:12:48",
+      subjectName: "VANCE, MARCUS RYAN",
+      docType: "Residence Permit",
+      docNumber: "ERP-88410294",
+      country: "European Union",
+      status: "REJECTED",
+      riskScore: 91,
+      analyst: "K. Lindqvist (AG-8819)",
+      presetRef: "forged_residence"
+    },
+    {
+      id: "SCR-2026-9750",
+      timestamp: "2026-10-08 11:30:19",
+      subjectName: "NAKAMURA, KENJI",
+      docType: "Passport",
+      docNumber: "JP-77401928",
+      country: "Japan",
+      status: "VERIFIED",
+      riskScore: 4,
+      analyst: "A. Cross (AG-9402)",
+      presetRef: "clean_passport"
+    },
+    {
+      id: "SCR-2026-9733",
+      timestamp: "2026-10-08 09:14:02",
+      subjectName: "DUBOIS, CLARA",
+      docType: "National ID Card",
+      docNumber: "FR-99120488",
+      country: "France",
+      status: "VERIFIED",
+      riskScore: 9,
+      analyst: "K. Lindqvist (AG-8819)",
+      presetRef: "clean_passport"
+    }
+  ],
+
+  init() {
+    const saved = localStorage.getItem("aegis_screening_history");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.history = parsed;
+        }
+      } catch (e) {
+        console.warn("Could not load history from localStorage:", e);
+      }
+    }
+    const session = localStorage.getItem("aegis_session_user");
+    if (session) {
+      try {
+        const u = JSON.parse(session);
+        if (u.loggedIn) {
+          this.currentUser = u;
+          this.activeView = "dashboard";
+        }
+      } catch (e) {
+        console.warn("Could not load session:", e);
+      }
+    }
+    // Set default result to clean passport for initial inspection
+    this.activeResult = {
+      ...DEMO_PRESETS.clean_passport,
+      screeningId: "SCR-2026-9812",
+      scanTime: "2026-10-08 19:42:10"
+    };
+  },
+
+  saveHistory() {
+    try {
+      localStorage.setItem("aegis_screening_history", JSON.stringify(this.history));
+    } catch (e) {
+      console.warn("Could not save history to localStorage:", e);
+    }
+  },
+
+  addScreeningRecord(record) {
+    this.history.unshift(record);
+    this.saveHistory();
+  },
+
+  getStats() {
+    const total = this.history.length;
+    const verified = this.history.filter(h => h.status === "VERIFIED").length;
+    const suspicious = this.history.filter(h => h.status === "SUSPICIOUS").length;
+    const rejected = this.history.filter(h => h.status === "REJECTED").length;
+    const avgRisk = total > 0 ? Math.round(this.history.reduce((acc, h) => acc + h.riskScore, 0) / total) : 0;
+    return { total, verified, suspicious, rejected, avgRisk };
+  }
+};

@@ -1,0 +1,178 @@
+﻿/* Official Audit Report & Print Stylesheet */
+
+.report-document-sheet {
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+
+.report-watermark {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 5rem;
+  font-weight: 900;
+  color: rgba(15, 23, 42, 0.03);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 12px;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.report-agency-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #0f172a;
+  text-transform: uppercase;
+}
+
+.report-subtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-top: 0.2rem;
+}
+
+.report-meta-box {
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+.report-meta-box .meta-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: #0284c7;
+  font-size: 0.95rem;
+}
+
+.report-meta-box .meta-date {
+  color: #64748b;
+  margin-top: 0.15rem;
+}
+
+.report-executive-summary {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.report-section-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #1e293b;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-bottom: 1.5rem;
+}
+
+.report-table th {
+  background: #f1f5f9;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-weight: 700;
+  color: #334155;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.report-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+.report-table td.code {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+}
+
+.report-findings-box {
+  background: #fff1f2;
+  border-left: 4px solid #ef4444;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.report-findings-box.clean {
+  background: #f0fdf4;
+  border-left-color: #10b981;
+}
+
+.report-footer-signatures {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #cbd5e1;
+  padding-top: 1.5rem;
+}
+
+.sig-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.78rem;
+}
+
+.sig-line {
+  width: 180px;
+  border-bottom: 1px dashed #64748b;
+  margin-bottom: 0.3rem;
+  height: 25px;
+}
+
+/* Print Overrides */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .app-header, .disclaimer-banner, .btn, .nav-menu, .no-print {
+    display: none !important;
+  }
+  .main-wrapper {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  .view-section {
+    display: none !important;
+  }
+  #view-detailed-report {
+    display: block !important;
+  }
+  .report-document-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+}

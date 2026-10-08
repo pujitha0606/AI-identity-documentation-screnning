@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://localhost:8080/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEGIS-ID // AI Fake Identity &amp; Document Screening System</title>
+  <meta name="description" content="Enterprise AI-powered fake identity and document screening platform with OCR, Error Level Analysis, computer vision, and registry verification.">
+  <link rel="icon" type="image/svg+xml" href="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/logo-shield.svg">
+  <link rel="stylesheet" href="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/styles.css">
+  <link rel="stylesheet" href="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/components.css">
+  <link rel="stylesheet" href="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/screening.css">
+  <link rel="stylesheet" href="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/print-report.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header no-print">
+    <div class="brand-section">
+      <img src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/logo-shield.svg" alt="AEGIS-ID Logo" class="brand-logo-img">
+      <div class="brand-text-wrap">
+        <div class="brand-title">
+          AEGIS-ID <span class="brand-badge">CORE v4.2</span>
+        </div>
+        <div class="brand-subtitle">AI Fake Identity &amp; Forensic Document Screening System</div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a class="nav-link active" data-view="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+          Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-view="upload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          Upload &amp; Screen
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-view="screening">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path></svg>
+          Live AI Scanner
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-view="results">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Results Card
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-view="comparison">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="18" x="3" y="3" rx="1"></rect><rect width="8" height="18" x="13" y="3" rx="1"></rect></svg>
+          Comparison Diff
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-view="history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+          Audit History
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-view="report">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect width="12" height="8" x="6" y="14"></rect></svg>
+          Detailed Report
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-view="technology">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          Tech Architecture
+        </a>
+      </li>
+    </ul>
+
+    <!-- Header Actions & Profile -->
+    <div class="header-actions">
+      <div class="system-status-indicator">
+        <span class="status-dot"></span>
+        <span>AI ENGINE ACTIVE</span>
+      </div>
+
+      <button id="theme-toggle-btn" class="btn btn-secondary btn-sm" title="Toggle Light/Dark Theme">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      </button>
+
+      <div class="user-profile-badge">
+        <div class="user-avatar" id="header-user-avatar">A</div>
+        <div class="user-info">
+          <div class="user-name" id="header-user-name">Alex Cross</div>
+          <div class="user-role" id="header-user-role">Senior Forensic Analyst</div>
+        </div>
+      </div>
+
+      <button id="btn-logout" class="btn btn-secondary btn-sm" title="Log Out">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Prototype Notice Disclaimer Banner -->
+  <div class="disclaimer-banner no-print">
+    <div class="disclaimer-text">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <span><strong>DEMONSTRATION PROTOTYPE:</strong> This system uses simulated AI computer vision, OCR extraction, and mock database registries. It does not connect to actual government databases or real citizen records.</span>
+    </div>
+    <div class="disclaimer-actions">
+      <span class="badge badge-info" style="font-size: 0.68rem;">EVALUATION MODE</span>
+    </div>
+  </div>
+
+  <main class="main-wrapper">
+
+    <!-- VIEW 1: LOGIN -->
+    <section id="view-login" class="view-section active-view">
+      <div style="max-width: 480px; margin: 3rem auto;">
+        <div class="cyber-card" style="padding: 2.5rem 2rem;">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <img src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/logo-shield.svg" alt="AEGIS-ID Shield" style="width: 58px; height: 58px; margin-bottom: 1rem; filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.7));">
+            <h1 style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px;">AEGIS-ID GATEWAY</h1>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.25rem;">AI Fake Identity &amp; Document Forensics Portal</p>
+          </div>
+
+          <div style="background: rgba(6, 182, 212, 0.08); border: 1px dashed var(--border-active); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.75rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--cyan-bright); text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.5px;">
+              ⚡ Quick Demo Sign-In (1-Click Access)
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" id="btn-demo-login-analyst" class="btn btn-secondary btn-sm" style="flex: 1; font-size: 0.75rem;">
+                Forensic Analyst
+              </button>
+              <button type="button" id="btn-demo-login-border" class="btn btn-secondary btn-sm" style="flex: 1; font-size: 0.75rem;">
+                Border Patrol Agent
+              </button>
+            </div>
+          </div>
+
+          <form id="login-form">
+            <div class="form-group">
+              <label class="form-label" for="login-email">Official ID / Clearance Email</label>
+              <input type="email" id="login-email" class="form-control" value="a.cross@border-intel.gov" required="">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="login-password">Access Token / Password</label>
+              <input type="password" id="login-password" class="form-control" value="••••••••••••" required="">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="login-role">Operational Role</label>
+              <select id="login-role" class="form-control">
+                <option value="Senior Forensic Analyst">Senior Forensic Analyst</option>
+                <option value="Border Inspection Officer">Border Inspection Officer</option>
+                <option value="AML Compliance Examiner">AML Compliance Examiner</option>
+                <option value="Immigration Auditor">Immigration Auditor</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+              Authenticate &amp; Launch System
+            </button>
+          </form>
+
+          <div style="margin-top: 1.5rem; text-align: center; font-size: 0.72rem; color: var(--text-muted);">
+            Secured via End-to-End Encrypted Mock Biometric Gateway // SHA-256 Ledger
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- VIEW 2: DASHBOARD -->
+    <section id="view-dashboard" class="view-section">
+      <div class="cyber-card" style="margin-bottom: 1.75rem; background: linear-gradient(135deg, rgba(11, 17, 32, 0.9) 0%, rgba(15, 23, 42, 0.7) 100%);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div class="badge badge-info" style="margin-bottom: 0.5rem;">CENTRAL SCREENING CONSOLE</div>
+            <h1 style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px;">Identity Document Forensics Overview</h1>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.35rem;">
+              Continuous real-time surveillance of submitted identity credentials, automated tampering diagnostics, and cross-registry validation.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <button class="btn btn-primary" onclick="UI.switchView('upload')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload &amp; Screen Document
+            </button>
+            <button class="btn btn-secondary" onclick="UI.switchView('history')">
+              Audit Logs
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Stat Cards -->
+      <div class="grid-4" style="margin-bottom: 1.75rem;">
+        <div class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            </div>
+            <span class="stat-badge-trend up">+14.2% wk</span>
+          </div>
+          <div class="stat-value" id="stat-total-screened">6</div>
+          <div class="stat-label">Total Documents Screened</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon success">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <span class="stat-badge-trend up">Pass 68%</span>
+          </div>
+          <div class="stat-value" id="stat-verified" style="color: var(--pass-color);">3</div>
+          <div class="stat-label">Verified (Legitimate)</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon warning">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <span class="stat-badge-trend warn">Audit Req</span>
+          </div>
+          <div class="stat-value" id="stat-suspicious" style="color: var(--warn-color);">1</div>
+          <div class="stat-label">Suspicious (Flagged)</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon danger">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            </div>
+            <span class="stat-badge-trend warn" style="color: #fca5a5;">High Risk</span>
+          </div>
+          <div class="stat-value" id="stat-rejected" style="color: var(--fail-color);">2</div>
+          <div class="stat-label">Rejected (Fraud Confirmed)</div>
+        </div>
+      </div>
+
+      <!-- Dashboard Split: Activity + Threat Matrix -->
+      <div class="grid-3">
+        <div class="cyber-card" style="grid-column: span 2;">
+          <div class="card-header-flex">
+            <div>
+              <div class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-primary)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Recent Screening Activity
+              </div>
+              <div class="card-subtitle">Live stream of identity documents evaluated across border &amp; registry checkpoints</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="UI.switchView('history')">View All</button>
+          </div>
+
+          <div class="cyber-table-wrap">
+            <table class="cyber-table">
+              <thead>
+                <tr>
+                  <th>Screening ID</th>
+                  <th>Subject Name</th>
+                  <th>Document Type</th>
+                  <th>Jurisdiction</th>
+                  <th>Result &amp; Risk</th>
+                  <th>Timestamp</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="recent-activity-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div>
+              <div class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warn-color)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Threat Vector Modalities
+              </div>
+              <div class="card-subtitle">Detected forgery techniques</div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+                <span>Photo Splicing &amp; ELA Anomalies</span>
+                <span class="code-font" style="color: var(--cyan-bright);">38%</span>
+              </div>
+              <div style="height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;">
+                <div style="width: 38%; height: 100%; background: var(--cyan-primary);"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+                <span>MRZ / Barcode Checksum Mismatch</span>
+                <span class="code-font" style="color: var(--warn-color);">27%</span>
+              </div>
+              <div style="height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;">
+                <div style="width: 27%; height: 100%; background: var(--warn-color);"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+                <span>Synthetic GAN Deepfake Faces</span>
+                <span class="code-font" style="color: var(--fail-color);">19%</span>
+              </div>
+              <div style="height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;">
+                <div style="width: 19%; height: 100%; background: var(--fail-color);"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+                <span>Interpol Watchlist / Blacklist Hash</span>
+                <span class="code-font" style="color: #c084fc;">11%</span>
+              </div>
+              <div style="height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;">
+                <div style="width: 11%; height: 100%; background: #c084fc;"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+                <span>Forged Ink Stamps &amp; Seals</span>
+                <span class="code-font" style="color: #fb923c;">5%</span>
+              </div>
+              <div style="height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;">
+                <div style="width: 5%; height: 100%; background: #fb923c;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem; padding: 0.85rem; border-radius: var(--radius-md); background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); font-size: 0.75rem; color: var(--text-secondary);">
+            <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem;">Fleet Risk Metric</div>
+            Average risk index across active cohort: <strong id="stat-avg-risk" class="code-font" style="color: var(--cyan-bright);">48/100</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: UPLOAD DOCUMENT -->
+    <section id="view-upload" class="view-section">
+      <div class="cyber-card" style="margin-bottom: 1.5rem;">
+        <div class="card-header-flex">
+          <div>
+            <div class="badge badge-info" style="margin-bottom: 0.5rem;">INGESTION STAGE</div>
+            <h1 style="font-size: 1.5rem; font-weight: 800;">Identity Document Submission &amp; Inspection Setup</h1>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Upload an identity document image or choose from pre-configured forensic evaluation scenarios.</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 0.5rem;">
+          <label class="form-label" style="font-size: 0.85rem; font-weight: 700; color: var(--cyan-bright);">
+            🎯 Select Demo Scenario (Instant 1-Click Test Presets):
+          </label>
+          <div class="preset-grid" id="preset-selector-grid">
+            <!-- Dynamically populated preset cards -->
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="cyber-card">
+          <div class="card-title" style="margin-bottom: 1.25rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Document Ingestion Controls
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="upload-doctype-select">Document Classification Type</label>
+            <select id="upload-doctype-select" class="form-control">
+              <option value="Passport">Passport (ICAO Doc 9303 Biometric)</option>
+              <option value="Driver's License">Driver's License (AAMVA DL/ID)</option>
+              <option value="National ID Card">National Identity Card (eID Card)</option>
+              <option value="Residence Permit">Permanent Residence Permit</option>
+              <option value="Tax ID">Tax &amp; Social Security ID</option>
+            </select>
+          </div>
+
+          <div id="file-drop-zone" style="border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; transition: var(--transition); background: rgba(11, 17, 32, 0.4);">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-primary)" stroke-width="1.75" style="margin-bottom: 0.75rem;"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>
+            <div style="font-weight: 700; font-size: 0.95rem;">Drag &amp; drop document scan here, or <span style="color: var(--cyan-bright); text-decoration: underline;">browse</span></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;">Supports High-Res JPG, PNG, WEBP, or SVG (Up to 25 MB)</div>
+            <input type="file" id="file-upload-input" accept="image/*" style="display: none;">
+          </div>
+
+          <div id="upload-file-meta" style="margin-top: 0.85rem; font-size: 0.78rem; color: var(--text-highlight); font-family: var(--font-mono);">
+            specimen_passport_elara.jpg (Passport - Republic of Aethel)
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+            <button id="btn-start-screening" class="btn btn-primary btn-lg" style="flex: 1;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Start AI Screening
+            </button>
+          </div>
+        </div>
+
+        <div class="cyber-card" style="display: flex; flex-direction: column;">
+          <div class="card-header-flex">
+            <div class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg>
+              Optical Ingestion Preview
+            </div>
+            <span class="badge badge-info" style="font-size: 0.68rem;">300 DPI EQUIV</span>
+          </div>
+
+          <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #020617; border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-subtle); min-height: 280px;">
+            <img id="upload-preview-image" src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/sample_passport_clean.jpg" alt="Document Preview" style="max-width: 100%; max-height: 320px; object-fit: contain; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- VIEW 4: LIVE AI SCREENING -->
+    <section id="view-screening" class="view-section">
+      <div class="cyber-card" style="margin-bottom: 1.5rem;">
+        <div class="card-header-flex">
+          <div>
+            <div class="badge badge-info" style="margin-bottom: 0.5rem;">PIPELINE EXECUTION</div>
+            <h1 style="font-size: 1.5rem; font-weight: 800;">Real-Time AI Forensic Screening Engine</h1>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Executing 8-pillar multi-modal verification: OCR, structural analysis, face biometrics, tampering ELA, and registry cross-matching.</p>
+          </div>
+          <div>
+            <button id="btn-skip-screening" class="btn btn-secondary btn-sm">
+              Skip Animation to Results ⏩
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="cyber-card" style="display: flex; flex-direction: column;">
+          <div class="card-header-flex">
+            <div class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-primary)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m10 15 5-3-5-3v6Z"></path></svg>
+              Computer Vision Sensor Array
+            </div>
+            <span class="badge badge-info">SCANNER ONLINE</span>
+          </div>
+
+          <div id="scanner-viewport" class="scanner-viewport-wrap">
+            <div class="scanning-laser-line"></div>
+            <div id="screening-bounding-boxes" class="bounding-box-overlay"></div>
+            <img id="screening-document-img" src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/sample_passport_clean.jpg" alt="Active Scan Document" class="document-preview-img">
+          </div>
+
+          <div style="margin-top: 1rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.35rem; display: flex; justify-content: space-between;">
+              <span>Subsystem Execution Telemetry (OpenCV / PyTorch / LayoutLM)</span>
+              <span class="code-font" style="color: var(--cyan-bright);">PORT: 8080 // STREAM ACTIVE</span>
+            </div>
+            <div id="screening-terminal-console" class="forensic-console">
+              <!-- Streaming logs appear here -->
+            </div>
+          </div>
+        </div>
+
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><polyline points="3 6 4 7 6 5"></polyline><polyline points="3 12 4 13 6 11"></polyline><polyline points="3 18 4 19 6 17"></polyline></svg>
+              Forensic Verification Protocol
+            </div>
+            <span class="badge badge-info">8 STEPS</span>
+          </div>
+
+          <div id="pipeline-steps-container" class="pipeline-step-list">
+            <!-- Dynamically populated 8 pipeline step elements -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: SCREENING RESULTS -->
+    <section id="view-results" class="view-section">
+      <div id="result-verdict-banner" class="verdict-banner verified">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.3rem;">
+            <span class="code-font" id="result-screening-id" style="font-size: 0.85rem; font-weight: 800; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px;">SCR-2026-9812</span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);">FORENSIC DETERMINATION VERDICT</span>
+          </div>
+          <h1 id="result-verdict-title" style="font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px;">VERIFIED — AUTHENTIC IDENTITY DOCUMENT</h1>
+          <p id="result-verdict-subtitle" style="font-size: 0.85rem; margin-top: 0.35rem; color: var(--text-secondary);">
+            Document passes all forensic inspection pillars. No manipulation detected.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn btn-secondary" onclick="UI.switchView('comparison')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="18" x="3" y="3" rx="1"></rect><rect width="8" height="18" x="13" y="3" rx="1"></rect></svg>
+            Compare with Registry
+          </button>
+          <button class="btn btn-primary" onclick="UI.switchView('report')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><rect width="12" height="8" x="6" y="14"></rect></svg>
+            View Full Report
+          </button>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom: 1.5rem;">
+        <div class="cyber-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+          <div class="card-title" style="margin-bottom: 0.75rem;">Composite Risk Score</div>
+          <div class="risk-gauge-container">
+            <svg class="gauge-svg" viewBox="0 0 160 160">
+              <circle class="gauge-track" cx="80" cy="80" r="64"></circle>
+              <circle id="risk-gauge-fill" class="gauge-fill low-risk" cx="80" cy="80" r="64" stroke-dasharray="402" stroke-dashoffset="380"></circle>
+            </svg>
+            <div class="gauge-center-text">
+              <span id="risk-gauge-val" class="gauge-value">6</span>
+              <span class="gauge-label">RISK INDEX (0-100)</span>
+            </div>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+            Risk Range: 0-30 Low (Pass), 31-70 Suspicious, 71-100 High (Fraud)
+          </div>
+        </div>
+
+        <div class="cyber-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div class="card-title" style="margin-bottom: 0.5rem;">AI Model Confidence</div>
+            <div style="font-size: 2.8rem; font-weight: 800; font-family: var(--font-mono); color: var(--cyan-bright);" id="result-confidence-val">
+              98.9%
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              Ensemble voting across ResNet-50 visual classifier, LayoutLMv3 semantic text extractor, and ArcFace biometric comparison.
+            </p>
+          </div>
+          <div style="padding: 0.75rem; border-radius: var(--radius-sm); background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); font-size: 0.78rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+              <span>Cryptographic Fingerprint:</span>
+              <span class="code-font" style="color: var(--cyan-primary);">SHA-256</span>
+            </div>
+            <div class="code-font" style="font-size: 0.7rem; color: var(--text-muted); word-break: break-all;">
+              e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+            </div>
+          </div>
+        </div>
+
+        <div class="cyber-card" style="position: relative; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="card-header-flex">
+            <div class="card-title">Localized Forensic Annotations</div>
+            <span class="badge badge-info" style="font-size: 0.65rem;">ACTIVE VIEW</span>
+          </div>
+          <div style="flex: 1; position: relative; background: #020617; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <div id="result-boxes-overlay" class="bounding-box-overlay"></div>
+            <img id="result-document-img" src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/sample_passport_clean.jpg" alt="Screening Preview" style="max-width: 100%; max-height: 200px; object-fit: contain;">
+          </div>
+        </div>
+      </div>
+
+      <div class="cyber-card" style="margin-bottom: 1.5rem;">
+        <div class="tabs-nav">
+          <button class="tab-btn result-tab-btn active" data-tab="pillars">8-Pillar Forensic Matrix</button>
+          <button class="tab-btn result-tab-btn" data-tab="extracted">Extracted OCR Metadata</button>
+          <button class="tab-btn result-tab-btn" data-tab="ela">Error Level Analysis (ELA Heatmap)</button>
+          <button class="tab-btn result-tab-btn" data-tab="indicators">Detected Fraud Vector Breakdown</button>
+        </div>
+
+        <div id="tab-pane-pillars" class="result-tab-pane">
+          <div id="result-pillars-grid" class="verification-pillars-grid">
+            <!-- Dynamically populated 8 pillar status cards -->
+          </div>
+        </div>
+
+        <div id="tab-pane-extracted" class="result-tab-pane" style="display: none;">
+          <div class="cyber-table-wrap">
+            <table class="cyber-table">
+              <thead>
+                <tr>
+                  <th style="width: 30%;">Data Field Entity</th>
+                  <th>Extracted OCR Value</th>
+                </tr>
+              </thead>
+              <tbody id="result-extracted-data-table">
+                <!-- Dynamically populated extracted fields -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="tab-pane-ela" class="result-tab-pane" style="display: none;">
+          <div class="grid-2">
+            <div>
+              <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--cyan-bright);">
+                High-Frequency Compression Delta Analysis
+              </h3>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+                Error Level Analysis (ELA) works by intentionally re-saving an image at a known quality level (e.g., 90%) and computing the difference matrix between the original and resaved frames.
+                In an authentic document, the error levels are uniformly dispersed. In edited or spliced documents (such as replaced portrait photos or altered expiration digits), the spliced regions exhibit sharp, unnatural thermal luminance spikes.
+              </p>
+              <div style="padding: 0.75rem; border-radius: var(--radius-sm); background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); font-size: 0.78rem;">
+                <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem;">Forensic Color Key:</div>
+                <div style="color: #94a3b8;">• Dark Blue / Indigo: Uniform baseline compression (Authentic)</div>
+                <div style="color: #f87171;">• Bright Red / White Hotspots: Re-saved spliced artifacts (Tampering)</div>
+              </div>
+            </div>
+            <div style="background: #020617; border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
+              <canvas id="results-ela-canvas" class="ela-canvas" style="max-height: 280px; object-fit: contain;"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-pane-indicators" class="result-tab-pane" style="display: none;">
+          <div id="result-fraud-indicators-list">
+            <!-- Dynamically populated fraud checklist -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- VIEW 6: DOCUMENT COMPARISON -->
+    <section id="view-comparison" class="view-section">
+      <div class="cyber-card" style="margin-bottom: 1.5rem;">
+        <div class="card-header-flex">
+          <div>
+            <div class="badge badge-info" style="margin-bottom: 0.5rem;">CROSS-DATABASE AUDIT</div>
+            <h1 style="font-size: 1.5rem; font-weight: 800;">Extracted OCR vs Civil Registry Reference Comparison</h1>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Direct side-by-side reconciliation between physical document optical scan and official centralized records.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 1.5rem;">
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg>
+              Physical Document Scan
+            </div>
+            <span class="badge badge-info">DOCUMENT FEED</span>
+          </div>
+          <div style="background: #020617; border-radius: var(--radius-md); padding: 1rem; display: flex; align-items: center; justify-content: center; min-height: 280px; border: 1px solid var(--border-subtle);">
+            <img id="comparison-doc-img" src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/sample_passport_clean.jpg" alt="Comparison Doc" style="max-width: 100%; max-height: 280px; object-fit: contain;">
+          </div>
+        </div>
+
+        <div class="cyber-card">
+          <div class="card-header-flex">
+            <div class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-bright)" stroke-width="2"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"></path><polyline points="14 2 14 8 20 8"></polyline><path d="m3 15 2 2 4-4"></path></svg>
+              Field-by-Field Reconciliation Ledger
+            </div>
+            <span class="badge badge-info">DIFF ENGINE</span>
+          </div>
+
+          <div id="comparison-fields-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <!-- Dynamically populated diff rows -->
+          </div>
+
+          <div id="comparison-registry-notes" style="margin-top: 1.25rem; padding: 0.85rem; border-radius: var(--radius-sm); background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle);">
+            <!-- Registry notes inserted dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 7: AUDIT HISTORY -->
+    <section id="view-history" class="view-section">
+      <div class="cyber-card" style="margin-bottom: 1.5rem;">
+        <div class="card-header-flex">
+          <div>
+            <div class="badge badge-info" style="margin-bottom: 0.5rem;">AUDIT TRAIL LEDGER</div>
+            <h1 style="font-size: 1.5rem; font-weight: 800;">Screening History &amp; Forensic Logs</h1>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Search, filter, and export permanent screening audit records.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btn-export-csv" class="btn btn-secondary btn-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+            <button id="btn-export-json" class="btn btn-secondary btn-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export JSON
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+          <div style="flex: 2; min-width: 240px;">
+            <input type="text" id="history-search-input" class="form-control" placeholder="Search by Screening ID, Subject Name, or Doc Number...">
+          </div>
+          <div style="flex: 1; min-width: 160px;">
+            <select id="history-filter-status" class="form-control">
+              <option value="ALL">All Statuses</option>
+              <option value="VERIFIED">Verified Only</option>
+              <option value="SUSPICIOUS">Suspicious Only</option>
+              <option value="REJECTED">Rejected Only</option>
+            </select>
+          </div>
+          <div style="flex: 1; min-width: 160px;">
+            <select id="history-filter-type" class="form-control">
+              <option value="ALL">All Document Types</option>
+              <option value="Passport">Passports</option>
+              <option value="Driver's License">Driver's Licenses</option>
+              <option value="National ID Card">National ID Cards</option>
+              <option value="Residence Permit">Residence Permits</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="cyber-card">
+        <div class="cyber-table-wrap">
+          <table class="cyber-table">
+            <thead>
+              <tr>
+                <th>Screening ID</th>
+                <th>Timestamp</th>
+                <th>Subject Name</th>
+                <th>Doc Type</th>
+                <th>Document #</th>
+                <th>Status &amp; Risk</th>
+                <th>Auditing Analyst</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="history-full-tbody">
+              <!-- Dynamically populated history -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <!-- VIEW 8: DETAILED REPORT -->
+    <section id="view-report" class="view-section">
+      <div class="cyber-card no-print" style="margin-bottom: 1.5rem;">
+        <div class="card-header-flex">
+          <div>
+            <div class="badge badge-info" style="margin-bottom: 0.5rem;">EXECUTIVE AUDIT SHEET</div>
+            <h1 style="font-size: 1.5rem; font-weight: 800;">Official Forensic Screening Certificate</h1>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Comprehensive verifiable document audit report ready for legal filing or physical printing.</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <button id="btn-print-report" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect width="12" height="8" x="6" y="14"></rect></svg>
+              Print / Save PDF Report
+            </button>
+            <button class="btn btn-secondary" onclick="UI.switchView('results')">
+              Back to Results
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-document-sheet">
+        <div class="report-watermark">AEGIS FORENSICS</div>
+
+        <div class="report-header">
+          <div>
+            <div class="report-agency-title">AEGIS-ID IDENTITY SCREENING &amp; FORENSICS</div>
+            <div class="report-subtitle">National Border Surveillance &amp; Fraud Mitigation Subsystem</div>
+            <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">ICAO 9303 &amp; ISO/IEC 18013 Forensic Compliance Certified</div>
+          </div>
+          <div class="report-meta-box">
+            <div class="meta-id" id="report-screening-id">SCR-2026-9812</div>
+            <div class="meta-date" id="report-timestamp">2026-10-08 19:42:10 UTC</div>
+            <div style="font-size: 0.75rem; color: #64748b;">Auditor: <strong id="report-analyst-name">A. Cross (AG-9402)</strong></div>
+          </div>
+        </div>
+
+        <div class="report-executive-summary">
+          <div>
+            <div class="report-section-title">Audit Determination</div>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem;">
+              <span id="report-verdict-badge" class="badge badge-verified" style="font-size: 1rem; padding: 0.4rem 1rem;">VERIFIED</span>
+              <span id="report-risk-meter" style="font-size: 0.9rem; font-weight: 700; color: #0284c7; font-family: 'JetBrains Mono', monospace;">
+                RISK SCORE: 6/100 (CONFIDENCE: 98.9%)
+              </span>
+            </div>
+            <div id="report-recommendation-text" style="font-size: 0.82rem; margin-top: 0.75rem; color: #334155;">
+              AUTO-APPROVE: Document satisfies all forensic and biometric security standards.
+            </div>
+          </div>
+          <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;">
+            <div style="border: 2px solid #0f172a; padding: 6px; border-radius: 4px; display: inline-block;">
+              <img src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/logo-shield.svg" alt="Seal" style="width: 55px; height: 55px;">
+            </div>
+            <div style="font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; color: #64748b; margin-top: 4px;">
+              HASH: e3b0c442...b855
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem; text-align: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1rem;">
+          <img id="report-document-img" src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/sample_passport_clean.jpg" alt="Report Doc Scan" style="max-height: 200px; max-width: 100%; object-fit: contain; border-radius: 4px;">
+        </div>
+
+        <div class="report-section-title">Extracted Document Attributes &amp; Cross-Verification</div>
+        <table class="report-table">
+          <tbody id="report-data-tbody">
+            <!-- Dynamically populated report table -->
+          </tbody>
+        </table>
+
+        <div id="report-findings-text" class="report-findings-box clean" style="font-size: 0.8rem; line-height: 1.6;">
+          <!-- Dynamically populated findings -->
+        </div>
+
+        <div class="report-footer-signatures">
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <div><strong>Forensic Examiner Signature</strong></div>
+            <div style="color: #64748b;">Alex Cross, Senior Analyst (AG-9402)</div>
+          </div>
+          <div class="sig-block" style="text-align: right;">
+            <div class="sig-line" style="margin-left: auto;"></div>
+            <div><strong>Official Security Seal</strong></div>
+            <div style="color: #64748b;">Aegis-ID Automated Verification Engine v4.2</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem; font-size: 0.68rem; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+          DISCLAIMER: This document audit report is generated as part of a technical prototype demonstration. Synthetic and mock registry data utilized for evaluation purposes.
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 9: ABOUT & TECHNOLOGY ARCHITECTURE -->
+    <section id="view-technology" class="view-section">
+      <div class="cyber-card" style="margin-bottom: 1.75rem;">
+        <div class="card-header-flex">
+          <div>
+            <div class="badge badge-info" style="margin-bottom: 0.5rem;">SYSTEM BLUEPRINT &amp; ARCHITECTURE</div>
+            <h1 style="font-size: 1.6rem; font-weight: 800;">Technology Stack &amp; Machine Learning Engine</h1>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Detailed technical breakdown of the multi-tiered AI, computer vision, OCR, and cryptographic pipeline powering AEGIS-ID.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cyber-card" style="margin-bottom: 1.75rem;">
+        <div class="card-title" style="margin-bottom: 1rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-bright)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          End-to-End Processing Dataflow Pipeline
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; background: rgba(11, 17, 32, 0.7); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); font-size: 0.78rem;">
+          <div style="text-align: center; padding: 0.75rem; background: var(--bg-card); border-radius: 6px; border: 1px solid var(--border-subtle); flex: 1; min-width: 110px;">
+            <div style="font-size: 1.2rem;">📥</div>
+            <strong>1. Ingestion</strong>
+            <div style="color: var(--text-muted); font-size: 0.7rem;">300 DPI Scanner / API</div>
+          </div>
+          <div style="color: var(--cyan-primary); font-weight: bold;">➔</div>
+          <div style="text-align: center; padding: 0.75rem; background: var(--bg-card); border-radius: 6px; border: 1px solid var(--border-subtle); flex: 1; min-width: 110px;">
+            <div style="font-size: 1.2rem;">📐</div>
+            <strong>2. CV Preprocess</strong>
+            <div style="color: var(--text-muted); font-size: 0.7rem;">Hough Deskew / Denoise</div>
+          </div>
+          <div style="color: var(--cyan-primary); font-weight: bold;">➔</div>
+          <div style="text-align: center; padding: 0.75rem; background: var(--bg-card); border-radius: 6px; border: 1px solid var(--border-subtle); flex: 1; min-width: 110px;">
+            <div style="font-size: 1.2rem;">🔤</div>
+            <strong>3. Neural OCR</strong>
+            <div style="color: var(--text-muted); font-size: 0.7rem;">LayoutLMv3 / TrOCR</div>
+          </div>
+          <div style="color: var(--cyan-primary); font-weight: bold;">➔</div>
+          <div style="text-align: center; padding: 0.75rem; background: var(--bg-card); border-radius: 6px; border: 1px solid var(--border-subtle); flex: 1; min-width: 110px;">
+            <div style="font-size: 1.2rem;">🔬</div>
+            <strong>4. ELA &amp; Forgery</strong>
+            <div style="color: var(--text-muted); font-size: 0.7rem;">Compression Residuals</div>
+          </div>
+          <div style="color: var(--cyan-primary); font-weight: bold;">➔</div>
+          <div style="text-align: center; padding: 0.75rem; background: var(--bg-card); border-radius: 6px; border: 1px solid var(--border-subtle); flex: 1; min-width: 110px;">
+            <div style="font-size: 1.2rem;">👤</div>
+            <strong>5. Face Biometrics</strong>
+            <div style="color: var(--text-muted); font-size: 0.7rem;">ArcFace / GAN Liveness</div>
+          </div>
+          <div style="color: var(--cyan-primary); font-weight: bold;">➔</div>
+          <div style="text-align: center; padding: 0.75rem; background: var(--bg-card); border-radius: 6px; border: 1px solid var(--border-subtle); flex: 1; min-width: 110px;">
+            <div style="font-size: 1.2rem;">🗄️</div>
+            <strong>6. Registry Cross-Match</strong>
+            <div style="color: var(--text-muted); font-size: 0.7rem;">Civil DB &amp; Interpol SLTD</div>
+          </div>
+          <div style="color: var(--cyan-primary); font-weight: bold;">➔</div>
+          <div style="text-align: center; padding: 0.75rem; background: var(--bg-card); border-radius: 6px; border: 1px solid var(--cyan-primary); flex: 1; min-width: 110px; box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);">
+            <div style="font-size: 1.2rem;">📊</div>
+            <strong style="color: var(--cyan-bright);">7. Risk Verdict</strong>
+            <div style="color: var(--text-muted); font-size: 0.7rem;">Ensemble Risk Score</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="cyber-card">
+          <div class="card-title">
+            <span style="font-size: 1.3rem;">🐍</span>
+            Python Backend &amp; Core Runtime
+          </div>
+          <p style="font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0.5rem;">
+            Orchestrated using asynchronous Python microservices (FastAPI / Celery). High-performance matrix mathematics and vector array processing driven by NumPy, SciPy, and PyTorch CUDA kernels for sub-second execution latencies.
+          </p>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+            <span class="badge badge-info" style="font-size: 0.7rem;">FastAPI</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">NumPy</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">SciPy</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">Celery Async Workers</span>
+          </div>
+        </div>
+
+        <div class="cyber-card">
+          <div class="card-title">
+            <span style="font-size: 1.3rem;">🧠</span>
+            Machine Learning &amp; Deep Learning
+          </div>
+          <p style="font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0.5rem;">
+            Employs YOLOv8 convolutional networks for ultra-fast document polygon localization and corner-pinning. Multi-class forgery classification is powered by fine-tuned ResNet-50 and Vision Transformer (ViT) backbones trained on authentic vs fraudulent credential corpora.
+          </p>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+            <span class="badge badge-info" style="font-size: 0.7rem;">PyTorch</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">YOLOv8 Segmentation</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">ResNet-50</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">Vision Transformers</span>
+          </div>
+        </div>
+
+        <div class="cyber-card">
+          <div class="card-title">
+            <span style="font-size: 1.3rem;">👁️</span>
+            OCR &amp; Multimodal Document Intelligence
+          </div>
+          <p style="font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0.5rem;">
+            Multimodal document processing integrating LayoutLMv3 with TrOCR (Transformer OCR). Jointly models visual bounding boxes, textual tokens, and 2D spatial layouts to reliably extract structured key-value pairs and validate ICAO 9303 Machine Readable Zone (MRZ) check-digits.
+          </p>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+            <span class="badge badge-info" style="font-size: 0.7rem;">LayoutLMv3</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">TrOCR Transformer</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">ICAO 9303 Parser</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">PDF417 Barcode Decoder</span>
+          </div>
+        </div>
+
+        <div class="cyber-card">
+          <div class="card-title">
+            <span style="font-size: 1.3rem;">🔬</span>
+            Computer Vision &amp; Error Level Analysis (ELA)
+          </div>
+          <p style="font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0.5rem;">
+            OpenCV-powered pixel forensic pipeline. Computes Error Level Analysis (ELA) across discrete JPEG 8x8 cosine transform matrices to unmask photo splicing, clone stamps, and font modifications. Evaluates Fourier spectral patterns to confirm guilloche security print integrity.
+          </p>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+            <span class="badge badge-info" style="font-size: 0.7rem;">OpenCV 4.x</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">Error Level Analysis (ELA)</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">FFT Guilloche Spectral</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">Sobel Edge Gradients</span>
+          </div>
+        </div>
+
+        <div class="cyber-card">
+          <div class="card-title">
+            <span style="font-size: 1.3rem;">👤</span>
+            Biometrics &amp; Deepfake Liveness Detection
+          </div>
+          <p style="font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0.5rem;">
+            Extracts 512-dimensional facial embeddings using ArcFace. Neural liveness networks detect diffusion models, GAN artifacts, abnormal corneal specular reflection, and color space distribution anomalies characteristic of synthetic identity portraits.
+          </p>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+            <span class="badge badge-info" style="font-size: 0.7rem;">ArcFace 512-D</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">GAN Texture Classifier</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">Pupil Specular Mesh</span>
+          </div>
+        </div>
+
+        <div class="cyber-card">
+          <div class="card-title">
+            <span style="font-size: 1.3rem;">🗄️</span>
+            Database Verification &amp; Cryptographic Ledger
+          </div>
+          <p style="font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0.5rem;">
+            High-throughput identity store modeled on PostgreSQL with the pgvector extension for real-time vector similarity matching. Integrates mock queries against National Civil Identity repositories, Interpol SLTD lost/stolen document watches, and SHA-256 tamper-evident ledgers.
+          </p>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+            <span class="badge badge-info" style="font-size: 0.7rem;">PostgreSQL + pgvector</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">Interpol SLTD Feed</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">SHA-256 Audit Trail</span>
+            <span class="badge badge-info" style="font-size: 0.7rem;">Redis Key-Value Cache</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Script Includes -->
+  <script src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/presets.js.download"></script>
+  <script src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/state.js.download"></script>
+  <script src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/ocr-engine.js.download"></script>
+  <script src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/ui.js.download"></script>
+  <script src="./AEGIS-ID __ AI Fake Identity &amp; Document Screening System_files/app.js.download"></script>
+
+
+</body></html>

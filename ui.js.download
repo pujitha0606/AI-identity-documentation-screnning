@@ -1,0 +1,656 @@
+﻿// UI Management, View Rendering & Interactive Controllers
+const UI = {
+  // Switch visible page view
+  switchView(viewName) {
+    if (!AppState.currentUser.loggedIn && viewName !== 'login') {
+      viewName = 'login';
+    }
+
+    AppState.activeView = viewName;
+    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
+    const targetEl = document.getElementById(iew-);
+    if (targetEl) targetEl.classList.add('active-view');
+
+    // Update active state in nav menu
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('data-view') === viewName) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+
+    // Header visibility
+    const headerEl = document.querySelector('.app-header');
+    const disclaimerEl = document.querySelector('.disclaimer-banner');
+    if (viewName === 'login') {
+      if (headerEl) headerEl.style.display = 'none';
+      if (disclaimerEl) disclaimerEl.style.display = 'none';
+    } else {
+      if (headerEl) headerEl.style.display = 'flex';
+      if (disclaimerEl) disclaimerEl.style.display = 'flex';
+    }
+
+    // View specific render hooks
+    if (viewName === 'dashboard') this.renderDashboard();
+    if (viewName === 'upload') this.renderUploadView();
+    if (viewName === 'results') this.renderResultsView();
+    if (viewName === 'comparison') this.renderComparisonView();
+    if (viewName === 'history') this.renderHistoryView();
+    if (viewName === 'report') this.renderReportView();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  // Render Dashboard statistics and activity
+  renderDashboard() {
+    const stats = AppState.getStats();
+    const totalEl = document.getElementById('stat-total-screened');
+    const verifiedEl = document.getElementById('stat-verified');
+    const suspiciousEl = document.getElementById('stat-suspicious');
+    const rejectedEl = document.getElementById('stat-rejected');
+    const avgRiskEl = document.getElementById('stat-avg-risk');
+
+    if (totalEl) totalEl.textContent = stats.total;
+    if (verifiedEl) verifiedEl.textContent = stats.verified;
+    if (suspiciousEl) suspiciousEl.textContent = stats.suspicious;
+    if (rejectedEl) rejectedEl.textContent = stats.rejected;
+    if (avgRiskEl) avgRiskEl.textContent = ${stats.avgRisk}/100;
+
+    // Render Recent Screening Table
+    const recentTableBody = document.getElementById('recent-activity-tbody');
+    if (recentTableBody) {
+      recentTableBody.innerHTML = '';
+      const recentItems = AppState.history.slice(0, 5);
+      recentItems.forEach(item => {
+        const tr = document.createElement('tr');
+        const badgeClass = item.status === 'VERIFIED' ? 'badge-verified' : (item.status === 'SUSPICIOUS' ? 'badge-suspicious' : 'badge-rejected');
+        tr.innerHTML = 
+          <td class="code-font" style="color: var(--cyan-bright); font-weight: 700;"></td>
+          <td><strong></strong></td>
+          <td></td>
+          <td></td>
+          <td>
+            <div style=\"display: flex; align-items: center; gap: 0.5rem;\">
+              <span class=\"badge \"></span>
+              <span class=\"code-font\" style=\"font-size: 0.78rem;\">(/100)</span>
+            </div>
+          </td>
+          <td class=\"code-font\" style=\"color: var(--text-secondary); font-size: 0.78rem;\"></td>
+          <td>
+            <button class=\"btn btn-secondary btn-sm\" onclick=\"UI.inspectHistoricalRecord('')\">
+              <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>
+              Inspect
+            </button>
+          </td>
+        ;
+        recentTableBody.appendChild(tr);
+      });
+    }
+  },
+
+  // Render Upload view presets and dropzone
+  renderUploadView() {
+    const presetGrid = document.getElementById('preset-selector-grid');
+    if (presetGrid) {
+      presetGrid.innerHTML = '';
+      Object.keys(DEMO_PRESETS).forEach(key => {
+        const preset = DEMO_PRESETS[key];
+        const card = document.createElement('div');
+        const isSelected = AppState.currentUpload.presetId === key;
+        card.className = preset-card ;
+        card.onclick = () => this.selectPreset(key);
+
+        const badgeClass = preset.scores.status === 'VERIFIED' ? 'badge-verified' : (preset.scores.status === 'SUSPICIOUS' ? 'badge-suspicious' : 'badge-rejected');
+
+        card.innerHTML = 
+          <div class=\"preset-card-title\">
+            <span></span>
+            <span class=\"badge \" style=\"font-size: 0.65rem; padding: 2px 6px;\"></span>
+          </div>
+          <div class=\"preset-card-desc\"></div>
+          <div style=\"font-size: 0.7rem; color: var(--cyan-primary); font-family: var(--font-mono); margin-top: 0.2rem;\">
+            Risk: /100 | 
+          </div>
+        ;
+        presetGrid.appendChild(card);
+      });
+    }
+
+    this.updateUploadPreview();
+  },
+
+  selectPreset(key) {
+    const preset = DEMO_PRESETS[key];
+    if (!preset) return;
+    AppState.currentUpload.presetId = key;
+    AppState.currentUpload.imageSrc = preset.image;
+    AppState.currentUpload.docType = preset.docType;
+    AppState.currentUpload.country = preset.country;
+    AppState.currentUpload.fileName = preset.title;
+
+    const typeSelect = document.getElementById('upload-doctype-select');
+    if (typeSelect) typeSelect.value = preset.docType;
+
+    this.renderUploadView();
+  },
+
+  updateUploadPreview() {
+    const previewImg = document.getElementById('upload-preview-image');
+    const uploadMeta = document.getElementById('upload-file-meta');
+    if (previewImg) {
+      previewImg.src = AppState.currentUpload.imageSrc;
+    }
+    if (uploadMeta) {
+      uploadMeta.textContent = ${AppState.currentUpload.fileName} ( - );
+    }
+  },
+
+  // Start the live 8-step screening execution
+  startScreeningExecution() {
+    this.switchView('screening');
+    AppState.screeningStatus.isRunning = true;
+    AppState.screeningStatus.currentStepIndex = 0;
+
+    const scanImg = document.getElementById('screening-document-img');
+    const viewportWrap = document.getElementById('scanner-viewport');
+    const consoleEl = document.getElementById('screening-terminal-console');
+    const stepsListEl = document.getElementById('pipeline-steps-container');
+    const overlayBoxEl = document.getElementById('screening-bounding-boxes');
+
+    if (scanImg) scanImg.src = AppState.currentUpload.imageSrc;
+    if (viewportWrap) viewportWrap.classList.add('scanning-active');
+    if (overlayBoxEl) overlayBoxEl.innerHTML = '';
+    if (consoleEl) {
+      consoleEl.innerHTML = 
+        <div class=\"console-entry info\">[] AEGIS-ID Forensic Engine v4.2.1 initialized.</div>
+        <div class=\"console-entry info\">[] Loading input document: </div>
+      ;
+    }
+
+    // Render initial steps markup
+    if (stepsListEl) {
+      stepsListEl.innerHTML = '';
+      ForensicEngine.pipelineSteps.forEach((step, idx) => {
+        const item = document.createElement('div');
+        item.id = pipeline-step-;
+        item.className = pipeline-step-item ;
+        item.innerHTML = 
+          <div class=\"step-status-icon\"></div>
+          <div class=\"step-details\">
+            <div class=\"step-name\"></div>
+            <div class=\"step-desc\"></div>
+          </div>
+          <span class=\"step-badge badge badge-info\">WAITING</span>
+        ;
+        stepsListEl.appendChild(item);
+      });
+    }
+
+    // Execute step sequence
+    this.runPipelineStep(0);
+  },
+
+  runPipelineStep(stepIdx) {
+    if (!AppState.screeningStatus.isRunning) return;
+
+    const steps = ForensicEngine.pipelineSteps;
+    const consoleEl = document.getElementById('screening-terminal-console');
+    const preset = DEMO_PRESETS[AppState.currentUpload.presetId] || DEMO_PRESETS.clean_passport;
+
+    if (stepIdx >= steps.length) {
+      // Pipeline completed!
+      this.completeScreening(preset);
+      return;
+    }
+
+    AppState.screeningStatus.currentStepIndex = stepIdx;
+    const step = steps[stepIdx];
+    const stepEl = document.getElementById(pipeline-step-);
+
+    // Update active UI
+    if (stepEl) {
+      stepEl.className = 'pipeline-step-item active';
+      const badge = stepEl.querySelector('.step-badge');
+      if (badge) {
+        badge.className = 'step-badge badge badge-info';
+        badge.textContent = 'ANALYZING';
+      }
+      const icon = stepEl.querySelector('.step-status-icon');
+      if (icon) icon.innerHTML = '⚙';
+    }
+
+    // Emit simulated logs
+    if (consoleEl) {
+      step.logs.forEach(msg => {
+        const logLine = document.createElement('div');
+        logLine.className = msg.includes('[ALERT]') ? 'console-entry alert' : (msg.includes('[ANALYSIS]') ? 'console-entry warn' : 'console-entry info');
+        logLine.textContent = [] ;
+        consoleEl.appendChild(logLine);
+      });
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    // Trigger bounding boxes at Step 2 & 5
+    if (stepIdx === 1 || stepIdx === 4) {
+      const overlayBoxEl = document.getElementById('screening-bounding-boxes');
+      if (overlayBoxEl && preset.boundingBoxes) {
+        ForensicEngine.renderBoundingBoxes(overlayBoxEl, preset.boundingBoxes);
+      }
+    }
+
+    // Step duration timer
+    setTimeout(() => {
+      if (!AppState.screeningStatus.isRunning) return;
+
+      // Mark step completed
+      if (stepEl) {
+        const isSuspect = (stepIdx === 4 || stepIdx === 5 || stepIdx === 6) && preset.scores.status !== 'VERIFIED';
+        stepEl.className = pipeline-step-item ;
+        const badge = stepEl.querySelector('.step-badge');
+        if (badge) {
+          badge.className = step-badge badge ;
+          badge.textContent = isSuspect ? 'ANOMALY' : 'PASSED';
+        }
+        const icon = stepEl.querySelector('.step-status-icon');
+        if (icon) icon.innerHTML = isSuspect ? '✕' : '✓';
+      }
+
+      // Run next step
+      this.runPipelineStep(stepIdx + 1);
+    }, AppState.screeningStatus.speedMs);
+  },
+
+  skipScreeningToResults() {
+    AppState.screeningStatus.isRunning = false;
+    const preset = DEMO_PRESETS[AppState.currentUpload.presetId] || DEMO_PRESETS.clean_passport;
+    this.completeScreening(preset);
+  },
+
+  completeScreening(preset) {
+    const viewportWrap = document.getElementById('scanner-viewport');
+    if (viewportWrap) viewportWrap.classList.remove('scanning-active');
+
+    // Create new screening result object
+    const newId = SCR-2026-;
+    const nowStr = new Date().toLocaleString('en-US', { hour12: false });
+
+    AppState.activeResult = {
+      ...preset,
+      screeningId: newId,
+      scanTime: nowStr
+    };
+
+    // Save to audit history
+    AppState.addScreeningRecord({
+      id: newId,
+      timestamp: nowStr,
+      subjectName: preset.extractedData.fullName,
+      docType: preset.docType,
+      docNumber: preset.extractedData.docNumber,
+      country: preset.country,
+      status: preset.scores.status,
+      riskScore: preset.scores.riskScore,
+      analyst: ${AppState.currentUser.name} (),
+      presetRef: preset.id
+    });
+
+    // Navigate to Results page
+    this.switchView('results');
+  },
+
+  // Render the Master Results page
+  renderResultsView() {
+    const res = AppState.activeResult || DEMO_PRESETS.clean_passport;
+
+    // Header Verdict Banner
+    const verdictBanner = document.getElementById('result-verdict-banner');
+    const verdictTitle = document.getElementById('result-verdict-title');
+    const verdictSubtitle = document.getElementById('result-verdict-subtitle');
+    const screeningIdBadge = document.getElementById('result-screening-id');
+
+    if (screeningIdBadge) screeningIdBadge.textContent = res.screeningId || 'SCR-2026-LIVE';
+
+    const status = res.scores.status;
+    if (verdictBanner) {
+      verdictBanner.className = erdict-banner ;
+    }
+    if (verdictTitle) {
+      verdictTitle.textContent = status === 'VERIFIED' ? 'VERIFIED — AUTHENTIC IDENTITY DOCUMENT' : (status === 'SUSPICIOUS' ? 'SUSPICIOUS — SECONDARY AUDIT REQUIRED' : 'REJECTED — FRAUD DETECTED');
+    }
+    if (verdictSubtitle) {
+      verdictSubtitle.textContent = res.recommendation;
+    }
+
+    // Risk Gauge animation
+    const gaugeFill = document.getElementById('risk-gauge-fill');
+    const gaugeVal = document.getElementById('risk-gauge-val');
+    const confVal = document.getElementById('result-confidence-val');
+
+    if (gaugeVal) gaugeVal.textContent = res.scores.riskScore;
+    if (confVal) confVal.textContent = ${res.scores.confidence}%;
+
+    if (gaugeFill) {
+      const radius = 64;
+      const circumference = 2 * Math.PI * radius;
+      gaugeFill.style.strokeDasharray = circumference;
+      const offset = circumference - (res.scores.riskScore / 100) * circumference;
+      gaugeFill.style.strokeDashoffset = offset;
+
+      gaugeFill.className = 'gauge-fill ' + (res.scores.riskScore < 30 ? 'low-risk' : (res.scores.riskScore < 75 ? 'med-risk' : 'high-risk'));
+    }
+
+    // Extracted Fields Table
+    const dataTable = document.getElementById('result-extracted-data-table');
+    if (dataTable && res.extractedData) {
+      dataTable.innerHTML = 
+        <tr><td>Full Legal Name</td><td class=\"code-font\" style=\"font-weight: 700;\"></td></tr>
+        <tr><td>Document Number</td><td class=\"code-font\" style=\"color: var(--cyan-bright); font-weight: 700;\"></td></tr>
+        <tr><td>Document Type</td><td></td></tr>
+        <tr><td>Issuing Country</td><td></td></tr>
+        <tr><td>Date of Birth</td><td class=\"code-font\"></td></tr>
+        <tr><td>Expiry Date</td><td class=\"code-font\"></td></tr>
+        <tr><td>Issuing Authority</td><td></td></tr>
+        <tr><td>Machine Readable Zone</td><td class=\"code-font\" style=\"font-size: 0.75rem; letter-spacing: 1px; color: var(--text-highlight);\"></td></tr>
+      ;
+    }
+
+    // Document image preview
+    const resultImg = document.getElementById('result-document-img');
+    const overlayResultBoxes = document.getElementById('result-boxes-overlay');
+    if (resultImg) resultImg.src = res.image;
+    if (overlayResultBoxes && res.boundingBoxes) {
+      ForensicEngine.renderBoundingBoxes(overlayResultBoxes, res.boundingBoxes);
+    }
+
+    // 8-Pillars Status Matrix
+    const pillarsContainer = document.getElementById('result-pillars-grid');
+    if (pillarsContainer) {
+      const pillars = [
+        { title: "OCR Text Accuracy", score: ${res.scores.ocrAccuracy}%, pass: res.scores.ocrAccuracy > 95, desc: "Character confidence & layout matching" },
+        { title: "Face & Biometrics", score: ${res.scores.faceMatch}% Match, pass: res.scores.faceMatch > 75, desc: "Landmark mesh & GAN deepfake check" },
+        { title: "Tampering (ELA)", score: Score: %, pass: res.scores.tamperingScore < 20, desc: "Compression delta & edge splicing" },
+        { title: "Document Structure", score: res.scores.status === 'VERIFIED' ? 'VALID' : 'ANOMALY', pass: res.scores.status === 'VERIFIED', desc: "Guilloche lines & microtext resolution" },
+        { title: "Info Consistency", score: res.scores.consistency, pass: res.scores.consistency === 'PASS', desc: "ICAO 9303 checksum & age logic" },
+        { title: "Hologram / Security Foil", score: res.scores.status === 'VERIFIED' ? 'PASS' : 'WARNING', pass: res.scores.status === 'VERIFIED', desc: "Optical diffraction reflection pattern" },
+        { title: "National Civil Registry", score: res.scores.dbStatus, pass: res.scores.dbStatus === 'MATCH', desc: "Mock identity record cross-check" },
+        { title: "Interpol SLTD Watchlist", score: res.scores.status === 'REJECTED' && res.id === 'forged_residence' ? 'STOLEN FLAG' : 'CLEAR', pass: !(res.id === 'forged_residence'), desc: "Lost & stolen documents registry" }
+      ];
+
+      pillarsContainer.innerHTML = '';
+      pillars.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'pillar-card';
+        card.innerHTML = 
+          <div class=\"pillar-info\">
+            <div class=\"pillar-icon\">
+              
+            </div>
+            <div>
+              <div class=\"pillar-title\"></div>
+              <div class=\"pillar-desc\"></div>
+            </div>
+          </div>
+          <span class=\"badge \"></span>
+        ;
+        pillarsContainer.appendChild(card);
+      });
+    }
+
+    // Detected Fraud Indicators List
+    const fraudListEl = document.getElementById('result-fraud-indicators-list');
+    if (fraudListEl && res.fraudIndicators) {
+      fraudListEl.innerHTML = '';
+      res.fraudIndicators.forEach(ind => {
+        const item = document.createElement('div');
+        item.style.padding = '0.75rem';
+        item.style.borderRadius = 'var(--radius-sm)';
+        item.style.border = '1px solid ' + (ind.status === 'PASS' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.35)');
+        item.style.background = ind.status === 'PASS' ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.1)';
+        item.style.marginBottom = '0.5rem';
+
+        item.innerHTML = 
+          <div style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;\">
+            <strong style=\"font-size: 0.85rem;\"></strong>
+            <span class=\"badge \"></span>
+          </div>
+          <div style=\"font-size: 0.75rem; color: var(--text-secondary);\"></div>
+        ;
+        fraudListEl.appendChild(item);
+      });
+    }
+
+    // Generate ELA on results canvas
+    const elaCanvas = document.getElementById('results-ela-canvas');
+    if (elaCanvas && resultImg) {
+      setTimeout(() => {
+        ForensicEngine.generateELA(resultImg, elaCanvas, res.scores.status !== 'VERIFIED');
+      }, 100);
+    }
+  },
+
+  // Render Document Comparison Diff View
+  renderComparisonView() {
+    const res = AppState.activeResult || DEMO_PRESETS.tampered_dl;
+    const docData = res.extractedData || {};
+    const refData = res.referenceRegistry || {};
+
+    const diffContainer = document.getElementById('comparison-fields-container');
+    const compImg = document.getElementById('comparison-doc-img');
+    if (compImg) compImg.src = res.image;
+
+    if (diffContainer) {
+      diffContainer.innerHTML = '';
+      const fields = [
+        { label: "Full Name", docVal: docData.fullName, refVal: refData.fullName },
+        { label: "Document ID", docVal: docData.docNumber, refVal: refData.docNumber },
+        { label: "Date of Birth", docVal: docData.dob, refVal: refData.dob },
+        { label: "Expiry Date", docVal: docData.expiry, refVal: refData.expiry },
+        { label: "Registry Status", docVal: "Visual ID Valid", refVal: refData.status }
+      ];
+
+      fields.forEach(f => {
+        const isMatch = f.docVal && f.refVal && (f.docVal.toUpperCase() === f.refVal.toUpperCase() || f.refVal === 'ACTIVE_VALID');
+        const row = document.createElement('div');
+        row.className = diff-field-row ;
+        row.innerHTML = 
+          <div style=\"width: 25%;\">
+            <div class=\"field-label\"></div>
+          </div>
+          <div style=\"width: 35%;\">
+            <div class=\"field-val\"></div>
+            <div style=\"font-size: 0.7rem; color: var(--text-muted);\">Extracted OCR</div>
+          </div>
+          <div style=\"width: 30%;\">
+            <div class=\"field-val\"></div>
+            <div style=\"font-size: 0.7rem; color: var(--text-muted);\">Registry Record</div>
+          </div>
+          <div style=\"width: 10%; text-align: right;\">
+            <span class=\"badge \" style=\"font-size: 0.65rem;\">
+              
+            </span>
+          </div>
+        ;
+        diffContainer.appendChild(row);
+      });
+    }
+
+    const compNotes = document.getElementById('comparison-registry-notes');
+    if (compNotes) {
+      compNotes.innerHTML = 
+        <div style=\"font-size: 0.85rem; color: var(--cyan-bright); font-weight: 700; margin-bottom: 0.25rem;\">
+          Civil Registry Forensic Telemetry:
+        </div>
+        <div style=\"font-size: 0.8rem; color: var(--text-secondary);\"></div>
+        <div class=\"code-font\" style=\"font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem;\">
+          Biometric Key Hash:  | Registry Query Status: 
+        </div>
+      ;
+    }
+  },
+
+  // Render History Audit Table
+  renderHistoryView() {
+    const tbody = document.getElementById('history-full-tbody');
+    const searchInput = document.getElementById('history-search-input');
+    const statusFilter = document.getElementById('history-filter-status');
+    const typeFilter = document.getElementById('history-filter-type');
+
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const statusVal = statusFilter ? statusFilter.value : 'ALL';
+    const typeVal = typeFilter ? typeFilter.value : 'ALL';
+
+    if (tbody) {
+      tbody.innerHTML = '';
+      const filtered = AppState.history.filter(item => {
+        const matchesQuery = !query || 
+          item.id.toLowerCase().includes(query) || 
+          item.subjectName.toLowerCase().includes(query) || 
+          item.docNumber.toLowerCase().includes(query);
+        const matchesStatus = statusVal === 'ALL' || item.status === statusVal;
+        const matchesType = typeVal === 'ALL' || item.docType.toLowerCase().includes(typeVal.toLowerCase());
+        return matchesQuery && matchesStatus && matchesType;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = <tr><td colspan=\"8\" style=\"text-align: center; padding: 2rem; color: var(--text-muted);\">No screening records found matching search criteria.</td></tr>;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const tr = document.createElement('tr');
+        const badgeClass = item.status === 'VERIFIED' ? 'badge-verified' : (item.status === 'SUSPICIOUS' ? 'badge-suspicious' : 'badge-rejected');
+        tr.innerHTML = 
+          <td class=\"code-font\" style=\"color: var(--cyan-bright); font-weight: 700;\"></td>
+          <td class=\"code-font\" style=\"font-size: 0.78rem;\"></td>
+          <td><strong></strong></td>
+          <td></td>
+          <td class=\"code-font\" style=\"font-size: 0.8rem;\"></td>
+          <td>
+            <div style=\"display: flex; align-items: center; gap: 0.4rem;\">
+              <span class=\"badge \"></span>
+              <span class=\"code-font\" style=\"font-size: 0.78rem;\">()</span>
+            </div>
+          </td>
+          <td style=\"font-size: 0.78rem; color: var(--text-secondary);\"></td>
+          <td>
+            <div style=\"display: flex; gap: 0.35rem;\">
+              <button class=\"btn btn-secondary btn-sm\" onclick=\"UI.inspectHistoricalRecord('')\">Report</button>
+              <button class=\"btn btn-secondary btn-sm\" onclick=\"UI.compareHistoricalRecord('')\">Compare</button>
+            </div>
+          </td>
+        ;
+        tbody.appendChild(tr);
+      });
+    }
+  },
+
+  inspectHistoricalRecord(id) {
+    const item = AppState.history.find(h => h.id === id);
+    if (!item) return;
+    const preset = DEMO_PRESETS[item.presetRef] || DEMO_PRESETS.clean_passport;
+    AppState.activeResult = {
+      ...preset,
+      screeningId: item.id,
+      scanTime: item.timestamp
+    };
+    this.switchView('report');
+  },
+
+  compareHistoricalRecord(id) {
+    const item = AppState.history.find(h => h.id === id);
+    if (!item) return;
+    const preset = DEMO_PRESETS[item.presetRef] || DEMO_PRESETS.clean_passport;
+    AppState.activeResult = {
+      ...preset,
+      screeningId: item.id,
+      scanTime: item.timestamp
+    };
+    this.switchView('comparison');
+  },
+
+  // Render Printable & Downloadable Detailed Report
+  renderReportView() {
+    const res = AppState.activeResult || DEMO_PRESETS.clean_passport;
+    const repId = document.getElementById('report-screening-id');
+    const repDate = document.getElementById('report-timestamp');
+    const repAnalyst = document.getElementById('report-analyst-name');
+    const repVerdictBadge = document.getElementById('report-verdict-badge');
+    const repRiskMeter = document.getElementById('report-risk-meter');
+    const repTable = document.getElementById('report-data-tbody');
+    const repImg = document.getElementById('report-document-img');
+    const repFindings = document.getElementById('report-findings-text');
+    const repRec = document.getElementById('report-recommendation-text');
+
+    if (repId) repId.textContent = res.screeningId || 'SCR-2026-9812';
+    if (repDate) repDate.textContent = res.scanTime || new Date().toLocaleString();
+    if (repAnalyst) repAnalyst.textContent = ${AppState.currentUser.name} ();
+    if (repImg) repImg.src = res.image;
+
+    if (repVerdictBadge) {
+      repVerdictBadge.className = adge ;
+      repVerdictBadge.textContent = res.scores.status;
+    }
+
+    if (repRiskMeter) {
+      repRiskMeter.textContent = RISK SCORE: /100 (CONFIDENCE: %);
+    }
+
+    if (repTable && res.extractedData) {
+      repTable.innerHTML = 
+        <tr><td><strong>Full Legal Name</strong></td><td class=\"code\"></td><td><strong>Document Type</strong></td><td></td></tr>
+        <tr><td><strong>Document Number</strong></td><td class=\"code\"></td><td><strong>Issuing Jurisdiction</strong></td><td></td></tr>
+        <tr><td><strong>Date of Birth</strong></td><td class=\"code\"></td><td><strong>Expiry Date</strong></td><td class=\"code\"></td></tr>
+        <tr><td><strong>OCR Accuracy</strong></td><td>%</td><td><strong>Biometric Face Match</strong></td><td>%</td></tr>
+        <tr><td><strong>Tampering Delta (ELA)</strong></td><td>%</td><td><strong>Registry Cross-Match</strong></td><td></td></tr>
+      ;
+    }
+
+    if (repFindings) {
+      let findingsHtml = <strong>FORENSIC DETERMINATION BREAKDOWN:</strong><ul style=\"margin-top: 0.4rem; padding-left: 1.2rem;\">;
+      res.fraudIndicators.forEach(f => {
+        findingsHtml += <li><strong> []:</strong> </li>;
+      });
+      findingsHtml += </ul>;
+      repFindings.innerHTML = findingsHtml;
+    }
+
+    if (repRec) {
+      repRec.innerHTML = <strong>FINAL ACTION DIRECTIVE:</strong> ;
+    }
+  },
+
+  // Export history as CSV
+  exportHistoryCSV() {
+    const headers = ["Screening ID", "Timestamp", "Subject Name", "Doc Type", "Doc Number", "Status", "Risk Score", "Country", "Analyst"];
+    const rows = AppState.history.map(h => [
+      \"\",
+      \"\",
+      \"\",
+      \"\",
+      \"\",
+      \"\",
+      h.riskScore,
+      \"\",
+      \"\"
+    ]);
+
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", egis_screening_audit_.csv);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  },
+
+  // Export history as JSON
+  exportHistoryJSON() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(AppState.history, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", egis_screening_audit_.json);
+    dlAnchor.click();
+  }
+};

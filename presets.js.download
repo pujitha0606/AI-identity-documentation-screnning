@@ -1,0 +1,228 @@
+﻿// Preset Demo Document Scenarios & Forensic Reference Data
+const DEMO_PRESETS = {
+  clean_passport: {
+    id: "clean_passport",
+    title: "Specimen Biometric Passport",
+    subtitle: "Legitimate document - Republic of Aethel",
+    tag: "CLEAN",
+    image: "assets/sample_passport_clean.jpg",
+    docType: "Passport",
+    country: "Republic of Aethel (AET)",
+    extractedData: {
+      fullName: "ELARA, JANE SARAH",
+      givenNames: "JANE SARAH",
+      surname: "ELARA",
+      docNumber: "AE12345678",
+      dob: "15 MAY 1985",
+      expiry: "31 DEC 2033",
+      issueDate: "01 JAN 2024",
+      sex: "F",
+      nationality: "AETHELIAN",
+      authority: "ARC_PASSPORT_OFFICE",
+      mrzLine1: "P<AETELARA<<JANE<SARAH<<<<<<<<<<<<<<<<<<<",
+      mrzLine2: "AE123456783AET8505156F3312316<<<<<<<<<<<88"
+    },
+    referenceRegistry: {
+      fullName: "ELARA, JANE SARAH",
+      docNumber: "AE12345678",
+      dob: "15 MAY 1985",
+      expiry: "31 DEC 2033",
+      status: "ACTIVE_VALID",
+      biometricHash: "0x8fa13b77ce20d912",
+      notes: "Clear record. Civil Registry match confirmed."
+    },
+    scores: {
+      status: "VERIFIED",
+      riskScore: 6,
+      confidence: 98.9,
+      ocrAccuracy: 99.4,
+      faceMatch: 97.2,
+      tamperingScore: 2.1,
+      consistency: "PASS",
+      dbStatus: "MATCH"
+    },
+    boundingBoxes: [
+      { x: 38, y: 22, w: 22, h: 7, label: "Surname: ELARA", tampered: false },
+      { x: 38, y: 31, w: 28, h: 7, label: "Given Names", tampered: false },
+      { x: 67, y: 15, w: 24, h: 7, label: "Doc No: AE12345678", tampered: false },
+      { x: 5, y: 22, w: 27, h: 52, label: "Portrait: Face Valid", tampered: false },
+      { x: 4, y: 81, w: 92, h: 16, label: "MRZ Line 1 & 2 [Valid]", tampered: false }
+    ],
+    fraudIndicators: [
+      { name: "Image Compression Delta (ELA)", status: "PASS", detail: "Uniform JPEG quantisation table. No anomalous high-frequency pixel deltas." },
+      { name: "Font Kerning & Microprint", status: "PASS", detail: "Font glyph geometries align precisely with standard ICAO 9303 vector metrics." },
+      { name: "MRZ Checksum Algorithm", status: "PASS", detail: "ICAO weights 7-3-1 check digits successfully validated for doc number, DOB, and expiry." },
+      { name: "Facial Landmark Mesh", status: "PASS", detail: "Natural corneal reflection and skin pore frequency spectra present." },
+      { name: "Guilloche Security Background", status: "PASS", detail: "Intact vector wave curves with 0% geometric disruption." },
+      { name: "National Civil Registry", status: "PASS", detail: "Mock civil registry record found. Biometric vector distance < 0.22." }
+    ],
+    recommendation: "AUTO-APPROVE: Document satisfies all forensic and biometric security standards. No escalation required."
+  },
+
+  tampered_dl: {
+    id: "tampered_dl",
+    title: "Tampered Driver's License",
+    subtitle: "Manipulated photo border & altered birth date",
+    tag: "TAMPERED",
+    image: "assets/sample_dl_tampered.jpg",
+    docType: "Driver's License",
+    country: "Metropolis State (US)",
+    extractedData: {
+      fullName: "DOE, JOHN ALLEN",
+      givenNames: "JOHN ALLEN",
+      surname: "DOE",
+      docNumber: "MTR-123-456-789",
+      dob: "05/15/1985",
+      expiry: "10/26/2026",
+      issueDate: "10/26/2021",
+      sex: "M",
+      nationality: "USA",
+      authority: "METROPOLIS DMV",
+      barcodePayload: "MTR-123-456-789|DOE|JOHN|05/15/1992|CLASS:D"
+    },
+    referenceRegistry: {
+      fullName: "DOE, JOHN ALLEN",
+      docNumber: "MTR-123-456-789",
+      dob: "05/15/1992", // Mismatch!
+      expiry: "10/26/2026",
+      status: "REVOKED_MISMATCH",
+      biometricHash: "0x3e18a9019b8821aa",
+      notes: "Registry DOB indicates 1992. Document visual zone reads 1985."
+    },
+    scores: {
+      status: "SUSPICIOUS",
+      riskScore: 82,
+      confidence: 94.3,
+      ocrAccuracy: 96.8,
+      faceMatch: 64.2,
+      tamperingScore: 84.7,
+      consistency: "FAIL",
+      dbStatus: "MISMATCH"
+    },
+    boundingBoxes: [
+      { x: 12, y: 35, w: 22, h: 42, label: "ALERT: Photo Edge Splicing", tampered: true },
+      { x: 38, y: 51, w: 25, h: 8, label: "ALERT: DOB Font Kerning Delta", tampered: true },
+      { x: 38, y: 35, w: 32, h: 7, label: "Name: John Allen Doe", tampered: false },
+      { x: 38, y: 25, w: 30, h: 7, label: "DLN: MTR-123-456-789", tampered: false },
+      { x: 74, y: 47, w: 20, h: 28, label: "Barcode Mismatch", tampered: true }
+    ],
+    fraudIndicators: [
+      { name: "Image Compression Delta (ELA)", status: "FAIL", detail: "Error Level Analysis reveals 43% compression variance around portrait bounding perimeter." },
+      { name: "Font Kerning & Baseline", status: "FAIL", detail: "Date of Birth '1985' glyph baseline shifted 4.2px. Font weights do not match DMV template." },
+      { name: "Data Cross-Consistency Check", status: "FAIL", detail: "Visual text DOB (05/15/1985) contradicts 2D PDF417 barcode payload (05/15/1992)." },
+      { name: "Facial Boundary Continuity", status: "FAIL", detail: "Clone stamp and feathering artifacts detected along ear and hairline border." },
+      { name: "National Civil Registry", status: "FAIL", detail: "Mock registry DOB mismatch. Potential fraudulent identity manipulation." }
+    ],
+    recommendation: "HOLD & ESCALATE: Secondary manual inspection mandated. Suspected photo replacement and fraudulent age alteration."
+  },
+
+  synthetic_id: {
+    id: "synthetic_id",
+    title: "Synthetic AI-Generated National ID",
+    subtitle: "Deepfake GAN face & invalid MRZ check digit",
+    tag: "SYNTHETIC",
+    image: "assets/sample_id_synthetic.svg",
+    docType: "National ID Card",
+    country: "Republic of Novaria (NOV)",
+    extractedData: {
+      fullName: "ROSTOVA, ELENA MARIA",
+      givenNames: "ELENA MARIA",
+      surname: "ROSTOVA",
+      docNumber: "NV-9840219-X",
+      dob: "24 APR 1994",
+      expiry: "18 OCT 2029",
+      issueDate: "18 OCT 2019",
+      sex: "F",
+      nationality: "NOVARIAN",
+      authority: "MINISTRY_OF_INTERIOR",
+      mrzLine1: "I<NOVNV9840219<X0<<<<<<<<<<<<<<<",
+      mrzLine2: "9404245F2910188NOV<<<<<<<<<<<ROSTOVA<<ELENA"
+    },
+    referenceRegistry: {
+      fullName: "UNKNOWN / RECORD NOT FOUND",
+      docNumber: "NV-9840219-X",
+      dob: "NOT_FOUND",
+      expiry: "NOT_FOUND",
+      status: "NON_EXISTENT",
+      biometricHash: "0x0000000000000000",
+      notes: "Document number does not exist in Novaria National Central Directory."
+    },
+    scores: {
+      status: "REJECTED",
+      riskScore: 94,
+      confidence: 97.6,
+      ocrAccuracy: 98.1,
+      faceMatch: 12.0,
+      tamperingScore: 92.4,
+      consistency: "FAIL",
+      dbStatus: "NOT_FOUND"
+    },
+    boundingBoxes: [
+      { x: 5, y: 22, w: 26, h: 51, label: "ALERT: Synthetic GAN Face", tampered: true },
+      { x: 67, y: 37, w: 25, h: 8, label: "ALERT: Doc No Not in Registry", tampered: true },
+      { x: 3, y: 77, w: 94, h: 16, label: "ALERT: MRZ Check Digit Inconsistent", tampered: true }
+    ],
+    fraudIndicators: [
+      { name: "Deepfake GAN Detection", status: "FAIL", detail: "Neural texture classifier indicates 96.8% probability of diffusion/GAN face synthesis." },
+      { name: "ICAO 9303 Check Digit", status: "FAIL", detail: "Line 1 doc number check digit computed as '7', but document displays '0'." },
+      { name: "Central Registry Verification", status: "FAIL", detail: "No matching record for NV-9840219-X in Mock National Civil Directory." },
+      { name: "Microprint & Watermark", status: "FAIL", detail: "Lack of high-frequency microprint vector detail in security background." }
+    ],
+    recommendation: "REJECT & CONFISCATE: High-confidence synthetic identity document. Forward case details to Cyber Fraud Intelligence Bureau."
+  },
+
+  forged_residence: {
+    id: "forged_residence",
+    title: "Forged Residence Permit Card",
+    subtitle: "Forged official stamp & Interpol SLTD hit",
+    tag: "WATCHLIST",
+    image: "assets/sample_residence_forged.svg",
+    docType: "Permanent Residence Permit",
+    country: "European Union / Canada",
+    extractedData: {
+      fullName: "VANCE, MARCUS RYAN",
+      givenNames: "MARCUS RYAN",
+      surname: "VANCE",
+      docNumber: "ERP-88410294",
+      dob: "12 MAR 1978",
+      expiry: "31 DEC 2030",
+      issueDate: "15 JAN 2013",
+      sex: "M",
+      nationality: "CANADIAN",
+      authority: "IMMIGRATION_DIRECTORATE",
+      mrzLine1: "CR<CANERP884102944<<<<<<<<<<<<<<",
+      mrzLine2: "7803120M3012314CAN<<<<<<<<<<<VANCE<<MARCUS"
+    },
+    referenceRegistry: {
+      fullName: "VANCE, MARCUS RYAN",
+      docNumber: "ERP-88410294",
+      dob: "12 MAR 1978",
+      expiry: "31 DEC 2023", // Expired!
+      status: "FLAGGED_INTERPOL_SLTD",
+      biometricHash: "0xcc7281f0102b4a78",
+      notes: "STOLEN BLANK DOCUMENT: Interpol SLTD database notification #SLTD-CAN-2023-9912."
+    },
+    scores: {
+      status: "REJECTED",
+      riskScore: 91,
+      confidence: 99.1,
+      ocrAccuracy: 98.4,
+      faceMatch: 41.5,
+      tamperingScore: 89.2,
+      consistency: "FAIL",
+      dbStatus: "WATCHLIST_MATCH"
+    },
+    boundingBoxes: [
+      { x: 67, y: 58, w: 22, h: 22, label: "ALERT: Forged Immigration Stamp", tampered: true },
+      { x: 65, y: 30, w: 25, h: 8, label: "ALERT: Expiry Altered from 2023", tampered: true },
+      { x: 65, y: 25, w: 28, h: 8, label: "CRITICAL: Interpol Watchlist Hit", tampered: true }
+    ],
+    fraudIndicators: [
+      { name: "Interpol SLTD Watchlist Match", status: "FAIL", detail: "Serial ERP-88410294 matches Stolen Blank Document notice reported in Montreal." },
+      { name: "Stamp Ink & Contour Analysis", status: "FAIL", detail: "Digital stamp simulation lacks physical pressure indentation and natural ink spread." },
+      { name: "Expiration Date Tampering", status: "FAIL", detail: "Original registry record expired in 2023. Document text artificially modified to 2030." },
+      { name: "Digital Signature Hash", status: "FAIL", detail: "Public key certificate validation failed. Signature not recognized by EU Trust List." }
+    ],
+    recommendation: "CRITICAL INTERCEPTION: Stolen document identity match. Immediately alert on-duty border enforcement security."
+  }
+};

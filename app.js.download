@@ -1,0 +1,291 @@
+﻿// Application Bootstrapper & Event Handlers
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize state
+  AppState.init();
+
+  // Navigation Links
+  document.querySelectorAll(".nav-link").forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const targetView = link.getAttribute("data-view");
+      if (targetView) UI.switchView(targetView);
+    });
+  });
+
+  // Theme Toggle
+  const themeToggleBtn = document.getElementById("theme-toggle-btn");
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("light-theme");
+      const isLight = document.body.classList.contains("light-theme");
+      themeToggleBtn.innerHTML = isLight ? 
+        '<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z\"/></svg>' : 
+        '<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"5\"/><line x1=\"12\" y1=\"1\" x2=\"12\" y2=\"3\"/><line x1=\"12\" y1=\"21\" x2=\"12\" y2=\"23\"/><line x1=\"4.22\" y1=\"4.22\" x2=\"5.64\" y2=\"5.64\"/><line x1=\"18.36\" y1=\"18.36\" x2=\"19.78\" y2=\"19.78\"/><line x1=\"1\" y1=\"12\" x2=\"3\" y2=\"12\"/><line x1=\"21\" y1=\"12\" x2=\"23\" y2=\"12\"/><line x1=\"4.22\" y1=\"19.78\" x2=\"5.64\" y2=\"18.36\"/><line x1=\"18.36\" y1=\"5.64\" x2=\"19.78\" y2=\"4.22\"/></svg>';
+    });
+  }
+
+  // Login Form Submission
+  const loginForm = document.getElementById("login-form");
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById("login-email");
+      const roleInput = document.getElementById("login-role");
+      
+      AppState.currentUser = {
+        name: emailInput.value.split("@")[0].toUpperCase() || "OFFICER CROSS",
+        email: emailInput.value || "analyst@border-intel.gov",
+        role: roleInput.value || "Senior Forensic Analyst",
+        officerId: "AG-" + Math.floor(1000 + Math.random() * 9000),
+        clearance: "LEVEL-3_FORENSICS",
+        loggedIn: true
+      };
+      localStorage.setItem("aegis_session_user", JSON.stringify(AppState.currentUser));
+      updateUserHeaderBadge();
+      UI.switchView("dashboard");
+    });
+  }
+
+  // Quick Demo Login Buttons
+  const demoLoginBtn1 = document.getElementById("btn-demo-login-analyst");
+  if (demoLoginBtn1) {
+    demoLoginBtn1.addEventListener("click", () => {
+      AppState.currentUser = {
+        name: "Alex Cross",
+        email: "a.cross@border-intel.gov",
+        role: "Senior Forensic Analyst",
+        officerId: "AG-9402",
+        clearance: "LEVEL-3_FORENSICS",
+        loggedIn: true
+      };
+      localStorage.setItem("aegis_session_user", JSON.stringify(AppState.currentUser));
+      updateUserHeaderBadge();
+      UI.switchView("dashboard");
+    });
+  }
+
+  const demoLoginBtn2 = document.getElementById("btn-demo-login-border");
+  if (demoLoginBtn2) {
+    demoLoginBtn2.addEventListener("click", () => {
+      AppState.currentUser = {
+        name: "Sara Vance",
+        email: "s.vance@customs-border.gov",
+        role: "Border Inspection Officer",
+        officerId: "AG-7114",
+        clearance: "LEVEL-2_TACTICAL",
+        loggedIn: true
+      };
+      localStorage.setItem("aegis_session_user", JSON.stringify(AppState.currentUser));
+      updateUserHeaderBadge();
+      UI.switchView("dashboard");
+    });
+  }
+
+  // Logout Button
+  const logoutBtn = document.getElementById("btn-logout");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      AppState.currentUser.loggedIn = false;
+      localStorage.removeItem("aegis_session_user");
+      UI.switchView("login");
+    });
+  }
+
+  // File Upload Drag and Drop
+  const dropZone = document.getElementById("file-drop-zone");
+  const fileInput = document.getElementById("file-upload-input");
+
+  if (dropZone && fileInput) {
+    dropZone.addEventListener("click", () => fileInput.click());
+
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = "var(--cyan-bright)";
+      dropZone.style.background = "rgba(6, 182, 212, 0.1)";
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.style.borderColor = "var(--border-subtle)";
+      dropZone.style.background = "transparent";
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = "var(--border-subtle)";
+      dropZone.style.background = "transparent";
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleCustomFileUpload(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleCustomFileUpload(e.target.files[0]);
+      }
+    });
+  }
+
+  function handleCustomFileUpload(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      AppState.currentUpload.imageSrc = e.target.result;
+      AppState.currentUpload.fileName = file.name;
+      AppState.currentUpload.presetId = "custom_upload";
+
+      // Register synthetic preset for custom file
+      DEMO_PRESETS.custom_upload = {
+        id: "custom_upload",
+        title: file.name,
+        subtitle: Custom uploaded file ( KB),
+        tag: "CUSTOM",
+        image: e.target.result,
+        docType: AppState.currentUpload.docType,
+        country: "Auto-Detected (INT)",
+        extractedData: {
+          fullName: "CUSTOM SUBJECT // INSPECT",
+          givenNames: "SUBJECT",
+          surname: "CUSTOM",
+          docNumber: "DOC-" + Math.floor(100000 + Math.random() * 900000),
+          dob: "12 AUG 1988",
+          expiry: "19 NOV 2028",
+          issueDate: "19 NOV 2018",
+          sex: "U",
+          nationality: "UNKNOWN",
+          authority: "CIVIL_ISSUING_REGISTRY",
+          mrzLine1: "I<INT" + Math.floor(10000000 + Math.random() * 90000000) + "<<<<<<<<<<<<<<<",
+          mrzLine2: "8808128U2811194INT<<<<<<<<<<<SUBJECT<<CUSTOM"
+        },
+        referenceRegistry: {
+          fullName: "CUSTOM SUBJECT // INSPECT",
+          docNumber: "DOC-VERIFY",
+          dob: "12 AUG 1988",
+          expiry: "19 NOV 2028",
+          status: "PENDING_VERIFICATION",
+          biometricHash: "0x" + Math.floor(Math.random() * 1e16).toString(16),
+          notes: "Custom uploaded document. Cross-referencing forensic models."
+        },
+        scores: {
+          status: "VERIFIED",
+          riskScore: 14,
+          confidence: 96.2,
+          ocrAccuracy: 98.7,
+          faceMatch: 92.4,
+          tamperingScore: 5.8,
+          consistency: "PASS",
+          dbStatus: "MATCH"
+        },
+        boundingBoxes: [
+          { x: 10, y: 20, w: 30, h: 40, label: "Face Portrait Analyzed", tampered: false },
+          { x: 45, y: 25, w: 45, h: 10, label: "Name & Credentials OCR", tampered: false },
+          { x: 45, y: 40, w: 40, h: 10, label: "Document ID Validated", tampered: false }
+        ],
+        fraudIndicators: [
+          { name: "Image Compression Delta (ELA)", status: "PASS", detail: "Standard discrete cosine transform artifacts. No tampering detected." },
+          { name: "Font Kerning & Microprint", status: "PASS", detail: "Uniform vector geometry alignment verified." },
+          { name: "MRZ Checksum Algorithm", status: "PASS", detail: "Composite check digits validated." }
+        ],
+        recommendation: "STANDARD PASS: Custom uploaded document demonstrates no critical forensic anomalies."
+      };
+
+      UI.updateUploadPreview();
+      const statusNotice = document.getElementById("upload-file-meta");
+      if (statusNotice) {
+        statusNotice.textContent = Custom file loaded:  - Ready for AI Screening!;
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Document Type selection dropdown
+  const docTypeSelect = document.getElementById("upload-doctype-select");
+  if (docTypeSelect) {
+    docTypeSelect.addEventListener("change", (e) => {
+      AppState.currentUpload.docType = e.target.value;
+    });
+  }
+
+  // Start Screening Button
+  const startScreeningBtn = document.getElementById("btn-start-screening");
+  if (startScreeningBtn) {
+    startScreeningBtn.addEventListener("click", () => {
+      UI.startScreeningExecution();
+    });
+  }
+
+  // Skip to Results Button
+  const skipScreeningBtn = document.getElementById("btn-skip-screening");
+  if (skipScreeningBtn) {
+    skipScreeningBtn.addEventListener("click", () => {
+      UI.skipScreeningToResults();
+    });
+  }
+
+  // Print Report Button
+  const printReportBtn = document.getElementById("btn-print-report");
+  if (printReportBtn) {
+    printReportBtn.addEventListener("click", () => {
+      window.print();
+    });
+  }
+
+  // Export CSV & JSON
+  const exportCsvBtn = document.getElementById("btn-export-csv");
+  if (exportCsvBtn) {
+    exportCsvBtn.addEventListener("click", () => UI.exportHistoryCSV());
+  }
+
+  const exportJsonBtn = document.getElementById("btn-export-json");
+  if (exportJsonBtn) {
+    exportJsonBtn.addEventListener("click", () => UI.exportHistoryJSON());
+  }
+
+  // History search and filters
+  const histSearch = document.getElementById("history-search-input");
+  const histStatus = document.getElementById("history-filter-status");
+  const histType = document.getElementById("history-filter-type");
+
+  if (histSearch) histSearch.addEventListener("input", () => UI.renderHistoryView());
+  if (histStatus) histStatus.addEventListener("change", () => UI.renderHistoryView());
+  if (histType) histType.addEventListener("change", () => UI.renderHistoryView());
+
+  // Result Tabs (Overview vs ELA vs Biometrics)
+  document.querySelectorAll(".result-tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".result-tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const tabKey = btn.getAttribute("data-tab");
+      document.querySelectorAll(".result-tab-pane").forEach(pane => {
+        pane.style.display = (pane.id === 	ab-pane-) ? "block" : "none";
+      });
+
+      if (tabKey === "ela") {
+        const res = AppState.activeResult || DEMO_PRESETS.clean_passport;
+        const resultImg = document.getElementById("result-document-img");
+        const elaCanvas = document.getElementById("results-ela-canvas");
+        if (elaCanvas && resultImg) {
+          ForensicEngine.generateELA(resultImg, elaCanvas, res.scores.status !== "VERIFIED");
+        }
+      }
+    });
+  });
+
+  function updateUserHeaderBadge() {
+    const userRoleEl = document.getElementById("header-user-role");
+    const userNameEl = document.getElementById("header-user-name");
+    const avatarEl = document.getElementById("header-user-avatar");
+
+    if (userRoleEl) userRoleEl.textContent = AppState.currentUser.role;
+    if (userNameEl) userNameEl.textContent = AppState.currentUser.name;
+    if (avatarEl) {
+      avatarEl.textContent = AppState.currentUser.name.charAt(0).toUpperCase();
+    }
+  }
+
+  // Initial check
+  if (AppState.currentUser.loggedIn) {
+    updateUserHeaderBadge();
+    UI.switchView("dashboard");
+  } else {
+    UI.switchView("login");
+  }
+});
